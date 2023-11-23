@@ -1,0 +1,56 @@
+using Unity.Burst;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Transforms;
+
+namespace DOTS
+{
+    public partial struct AppleSpawnerSystem : ISystem
+    {
+        [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            state.RequireForUpdate<BeginSimulationEntityCommandBufferSystem.Singleton>();
+        }
+
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
+        {
+            var deltaTime = SystemAPI.Time.DeltaTime;
+
+            var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+            var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+
+            foreach (var (transform, settings) in SystemAPI.Query<RefRO<LocalTransform>, RefRW<AppleDropSettings>>())
+            {
+                settings.ValueRW.Timer = settings.ValueRO.Timer - deltaTime;
+
+                if (settings.ValueRO.Timer > 0f) continue;
+
+                var apple = ecb.Instantiate(settings.ValueRO.Prefab);
+                ecb.AddComponent<AppleTag>(apple);
+                ecb.SetComponent(apple, LocalTransform.FromPosition(transform.ValueRO.Position));
+
+                ecb.AddSharedComponent(apple, new PhysicsWorldIndex());
+                ecb.AddComponent(apple, PhysicsMass.CreateDynamic(MassProperties.UnitSphere, 1f));
+                ecb.AddComponent(apple, new PhysicsVelocity
+                {
+                    Linear = float3.zero,
+                    Angular = float3.zero
+                });
+                ecb.AddComponent(apple, new PhysicsDamping
+                {
+                    Linear = 0.01f,
+                    Angular = 0.05f
+                });
+                ecb.AddComponent(apple, new PhysicsGravityFactor
+                {
+                    Value = 1f
+                });
+
+                settings.ValueRW.Timer = settings.ValueRO.Delay;
+            }
+        }
+    }
+}
