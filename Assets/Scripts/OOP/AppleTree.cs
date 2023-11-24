@@ -13,6 +13,9 @@ namespace OOP
         public GameObject applePrefab;
         public float appleDropDelay;
 
+        public int numApples;
+        public int counter;
+
         private void Start()
         {
             Invoke(nameof(DropApple), 2f);
@@ -20,8 +23,11 @@ namespace OOP
 
         private void DropApple()
         {
-            var apple = Instantiate(applePrefab);
-            apple.transform.position = Position;
+            for (var i = 0; i < numApples; i++)
+            {
+                var apple = Instantiate(applePrefab);
+                apple.transform.position = Position;
+            }
             Invoke(nameof(DropApple), appleDropDelay);
         }
 
@@ -39,6 +45,14 @@ namespace OOP
             {
                 speed = -Mathf.Abs(speed);
             }
+
+            if (counter % 100 == 0 && numApples < 1000)
+            {
+                numApples += 10;
+            }
+            counter++;
+
+            Debug.Log("numApples: " + numApples + " fps: " + 1f / Time.deltaTime);
         }
 
         private void FixedUpdate()

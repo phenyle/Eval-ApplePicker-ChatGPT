@@ -624,6 +624,8 @@ MonoBehaviour:
   changeDirectionChance: 0.2
   applePrefab: {fileID: 1090896523954248706, guid: 81edc8fc8402949a1979266e493b3054, type: 3}
   appleDropDelay: 1
+  numApples: 0
+  counter: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
