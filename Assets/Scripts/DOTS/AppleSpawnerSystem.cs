@@ -28,26 +28,29 @@ namespace DOTS
 
                 if (settings.ValueRO.Timer > 0f) continue;
 
-                var apple = ecb.Instantiate(settings.ValueRO.Prefab);
-                ecb.AddComponent<AppleTag>(apple);
-                ecb.SetComponent(apple, LocalTransform.FromPosition(transform.ValueRO.Position));
+                for (var i = 0; i < settings.ValueRO.Count; i++)
+                {
+                    var apple = ecb.Instantiate(settings.ValueRO.Prefab);
+                    ecb.AddComponent<AppleTag>(apple);
+                    ecb.SetComponent(apple, LocalTransform.FromPosition(transform.ValueRO.Position));
 
-                ecb.AddSharedComponent(apple, new PhysicsWorldIndex());
-                ecb.AddComponent(apple, PhysicsMass.CreateDynamic(MassProperties.UnitSphere, 1f));
-                ecb.AddComponent(apple, new PhysicsVelocity
-                {
-                    Linear = float3.zero,
-                    Angular = float3.zero
-                });
-                ecb.AddComponent(apple, new PhysicsDamping
-                {
-                    Linear = 0.01f,
-                    Angular = 0.05f
-                });
-                ecb.AddComponent(apple, new PhysicsGravityFactor
-                {
-                    Value = 1f
-                });
+                    ecb.AddSharedComponent(apple, new PhysicsWorldIndex());
+                    ecb.AddComponent(apple, PhysicsMass.CreateDynamic(MassProperties.UnitSphere, 1f));
+                    ecb.AddComponent(apple, new PhysicsVelocity
+                    {
+                        Linear = float3.zero,
+                        Angular = float3.zero
+                    });
+                    ecb.AddComponent(apple, new PhysicsDamping
+                    {
+                        Linear = 0.01f,
+                        Angular = 0.05f
+                    });
+                    ecb.AddComponent(apple, new PhysicsGravityFactor
+                    {
+                        Value = 1f
+                    });
+                }
 
                 settings.ValueRW.Timer = settings.ValueRO.Delay;
             }

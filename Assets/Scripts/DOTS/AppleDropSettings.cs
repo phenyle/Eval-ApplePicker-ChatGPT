@@ -7,5 +7,7 @@ namespace DOTS
         public Entity Prefab;
         public float Delay;
         public float Timer;
+        public int Count;
+        public int Counter;
     }
 }
