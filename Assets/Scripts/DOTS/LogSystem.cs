@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DOTS
 {
-    public partial struct LoadSystem : ISystem
+    public partial struct LogSystem : ISystem
     {
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
@@ -20,7 +20,8 @@ namespace DOTS
 
                 settings.ValueRW.Counter = settings.ValueRO.Counter + 1;
 
-                Debug.Log("numApples: " + numApples + " fps: " + 1f / SystemAPI.Time.DeltaTime);
+                var fps = 1f / SystemAPI.Time.DeltaTime;
+                Debug.Log("log: " + numApples + "," + fps);
             }
         }
     }
