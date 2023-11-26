@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace OOP
 {
@@ -52,7 +55,7 @@ namespace OOP
             }
             counter++;
 
-            Debug.Log("numApples: " + numApples + " fps: " + 1f / Time.deltaTime);
+            Debug.Log("log: " + numApples + "," + 1f / Time.deltaTime);
         }
 
         private void FixedUpdate()
