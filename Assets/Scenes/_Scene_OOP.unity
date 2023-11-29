@@ -713,7 +713,7 @@ MonoBehaviour:
   changeDirectionChance: 0.2
   applePrefab: {fileID: 3425350979331511955, guid: 6823dba14822640d68de558dce60f029, type: 3}
   appleDropDelay: 1
-  numApples: 0
+  numApples: 1
   counter: 0
 --- !u!1 &2016308696
 GameObject:

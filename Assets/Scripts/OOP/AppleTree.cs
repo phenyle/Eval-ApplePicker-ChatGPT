@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using OpenAi;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace OOP
 {
@@ -19,19 +18,34 @@ namespace OOP
         public int numApples;
         public int counter;
 
+        private OpenAiApi _openAI;
+
         private void Start()
         {
-            Invoke(nameof(DropApple), 2f);
+            Configuration.GlobalConfig = OpenAiApi.ReadConfigFromUserDirectory();
+            _openAI = new OpenAiApi();
+
+           InvokeRepeating(nameof(DropApple), 2f, appleDropDelay);
         }
 
-        private void DropApple()
+        private async void DropApple()
         {
+            counter++;
+            if (counter % 50 == 0 && numApples < 1000)
+            {
+                numApples *= 2;
+            }
+
             for (var i = 0; i < numApples; i++)
             {
+                var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
+
                 var apple = Instantiate(applePrefab);
                 apple.transform.position = Position;
+
+                var text = apple.GetComponentInChildren<TextMeshProUGUI>();
+                text.text = completion.Text == "" ? "New Apple" : completion.Text;
             }
-            Invoke(nameof(DropApple), appleDropDelay);
         }
 
         private void Update()
@@ -48,12 +62,6 @@ namespace OOP
             {
                 speed = -Mathf.Abs(speed);
             }
-
-            if (counter % 100 == 0 && numApples < 1000)
-            {
-                numApples += 10;
-            }
-            counter++;
 
             Debug.Log("log: " + numApples + "," + 1f / Time.deltaTime);
         }

@@ -15,10 +15,8 @@ namespace DOTS
 
                 if (settings.ValueRO.Counter % 100 == 0 && settings.ValueRO.Count < 1000)
                 {
-                    settings.ValueRW.Count = numApples + 10;
+                    settings.ValueRW.Count = numApples * 2;
                 }
-
-                settings.ValueRW.Counter = settings.ValueRO.Counter + 1;
 
                 var fps = 1f / SystemAPI.Time.DeltaTime;
                 Debug.Log("log: " + numApples + "," + fps);
