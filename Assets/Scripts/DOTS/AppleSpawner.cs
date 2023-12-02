@@ -18,7 +18,7 @@ namespace DOTS
         private OpenAiApi _openAI;
         private List<string> _labels = new();
 
-        private async void Awake()
+        private async void Start()
         {
             if (useOpenAI)
             {
