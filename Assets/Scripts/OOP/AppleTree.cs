@@ -14,6 +14,7 @@ namespace OOP
         [Header("Apple Drop Settings")]
         public GameObject applePrefab;
         public float appleDropDelay;
+        public bool useOpenAI;
 
         public int numApples;
         public int counter;
@@ -22,29 +23,37 @@ namespace OOP
 
         private void Start()
         {
-            Configuration.GlobalConfig = OpenAiApi.ReadConfigFromUserDirectory();
-            _openAI = new OpenAiApi();
+            if (useOpenAI)
+            {
+                Configuration.GlobalConfig = OpenAiApi.ReadConfigFromUserDirectory();
+                _openAI = new OpenAiApi();
+            }
 
-           InvokeRepeating(nameof(DropApple), 2f, appleDropDelay);
+            InvokeRepeating(nameof(DropApple), 2f, appleDropDelay);
         }
 
         private async void DropApple()
         {
             counter++;
-            if (counter % 50 == 0 && numApples < 1000)
-            {
-                numApples *= 2;
-            }
+            if (counter % 20 == 0 && numApples < 1000) numApples += 5;
 
             for (var i = 0; i < numApples; i++)
             {
-                var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
+                var completionText = "";
+                if (useOpenAI)
+                {
+                    var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
+                    completionText = completion.Text == "" ? "New Apple" : completion.Text;
+                }
 
                 var apple = Instantiate(applePrefab);
                 apple.transform.position = Position;
 
-                var text = apple.GetComponentInChildren<TextMeshProUGUI>();
-                text.text = completion.Text == "" ? "New Apple" : completion.Text;
+                if (useOpenAI)
+                {
+                    var text = apple.GetComponentInChildren<TextMeshProUGUI>();
+                    text.text = completionText;
+                }
             }
         }
 

@@ -12,7 +12,6 @@ namespace DOTS
         public float changeDirectionChance;
 
         [Header("Apple Drop Settings")]
-        public GameObject applePrefab;
         public float appleDropDelay;
 
         private class AppleTreeBaker : Baker<AppleTree>
@@ -29,7 +28,6 @@ namespace DOTS
                 });
                 AddComponent(entity, new AppleDropSettings
                 {
-                    Prefab = GetEntity(authoring.applePrefab, TransformUsageFlags.Dynamic),
                     Delay = authoring.appleDropDelay,
                     Timer = 2f
                 });
