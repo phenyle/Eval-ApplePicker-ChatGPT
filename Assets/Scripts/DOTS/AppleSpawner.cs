@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
 using OpenAi;
 using TMPro;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace DOTS
 {
@@ -10,15 +13,27 @@ namespace DOTS
     {
         public GameObject applePrefab;
         public bool useOpenAI;
+        public bool realTime = true;
 
         private OpenAiApi _openAI;
+        private List<string> _labels = new();
 
-        private void Awake()
+        private async void Awake()
         {
             if (useOpenAI)
             {
                 Configuration.GlobalConfig = OpenAiApi.ReadConfigFromUserDirectory();
                 _openAI = new OpenAiApi();
+
+                if (!realTime)
+                {
+                    for (var i = 0; i < 500; i++)
+                    {
+                        var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
+                        _labels.Add(completion.Text == "" ? "New Apple" : completion.Text);
+                        Debug.LogFormat("added {0} completions", i + 1);
+                    }
+                }
             }
         }
 
@@ -41,8 +56,15 @@ namespace DOTS
             var completionText = "";
             if (useOpenAI)
             {
-                var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
-                completionText = completion.Text == "" ? "New Apple" : completion.Text;
+                if (realTime)
+                {
+                    var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
+                    completionText = completion.Text == "" ? "New Apple" : completion.Text;
+                }
+                else
+                {
+                    completionText = _labels[(Index)Random.Range(0, _labels.Count - 1)];
+                }
             }
 
             var apple = Instantiate(applePrefab);

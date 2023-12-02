@@ -417,6 +417,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   applePrefab: {fileID: 3425350979331511955, guid: 6823dba14822640d68de558dce60f029, type: 3}
   useOpenAI: 1
+  realTime: 0
 --- !u!4 &1869377665
 Transform:
   m_ObjectHideFlags: 0

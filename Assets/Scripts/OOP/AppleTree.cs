@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using OpenAi;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace OOP
 {
@@ -15,18 +18,30 @@ namespace OOP
         public GameObject applePrefab;
         public float appleDropDelay;
         public bool useOpenAI;
+        public bool realTime = true;
 
         public int numApples;
         public int counter;
 
         private OpenAiApi _openAI;
+        private List<string> _labels = new();
 
-        private void Start()
+        private async void Start()
         {
             if (useOpenAI)
             {
                 Configuration.GlobalConfig = OpenAiApi.ReadConfigFromUserDirectory();
                 _openAI = new OpenAiApi();
+
+                if (!realTime)
+                {
+                    for (var i = 0; i < 500; i++)
+                    {
+                        var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
+                        _labels.Add(completion.Text == "" ? "New Apple" : completion.Text);
+                        Debug.LogFormat("added {0} completions", i + 1);
+                    }
+                }
             }
 
             InvokeRepeating(nameof(DropApple), 2f, appleDropDelay);
@@ -42,8 +57,15 @@ namespace OOP
                 var completionText = "";
                 if (useOpenAI)
                 {
-                    var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
-                    completionText = completion.Text == "" ? "New Apple" : completion.Text;
+                    if (realTime)
+                    {
+                        var completion = await _openAI.CreateCompletion("1 line greeting", OpenAiApi.Model.CHAT_GPT);
+                        completionText = completion.Text == "" ? "New Apple" : completion.Text;
+                    }
+                    else
+                    {
+                        completionText = _labels[(Index)Random.Range(0, _labels.Count - 1)];
+                    }
                 }
 
                 var apple = Instantiate(applePrefab);
