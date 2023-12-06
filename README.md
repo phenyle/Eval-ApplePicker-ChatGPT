@@ -1,6 +1,6 @@
-# Evaluating the Effect of Generative AI Content in Common Game Development Software Architectures
+# Apple Picker OpenAI Integration
 
-This repository contains the source code and data for the paper "Evaluating the Effect of Generative AI Content in Common Game Development Software Architectures" by Ashish Amresh, Siddharth Subramanian and Igor Steinmacher. It implements the OOP and ECS versions of the apple dropping feature from Apple Picker in the book "Introduction to Game Design, Prototyping, and Development: From Concept to Playable Game with Unity and C#, 3rd Edition" by Jeremy Gibson Bond.
+This repository the OOP and ECS versions of the apple dropping feature from Apple Picker in the book "Introduction to Game Design, Prototyping, and Development: From Concept to Playable Game with Unity and C#, 3rd Edition" by Jeremy Gibson Bond.
 
 ## Scenes
 
