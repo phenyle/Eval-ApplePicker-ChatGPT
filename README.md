@@ -11,7 +11,7 @@ The scenes are located in the `Assets/Scenes` directory. The scenes are named as
 
 ## Dependencies
 
-- (Plugin for ChatGPT / DALL-E (OpenAI))[https://assetstore.unity.com/packages/tools/behavior-ai/plugin-for-chatgpt-dall-e-openai-247238] from the Unity Asset Store.
+- [Plugin for ChatGPT / DALL-E (OpenAI)](https://assetstore.unity.com/packages/tools/behavior-ai/plugin-for-chatgpt-dall-e-openai-247238) from the Unity Asset Store.
 
 ## Testing
 
