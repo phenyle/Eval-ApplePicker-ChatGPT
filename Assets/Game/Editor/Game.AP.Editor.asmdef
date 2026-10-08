@@ -1,0 +1,7 @@
+{
+    "name": "Game.AP.Editor",
+    "rootNamespace": "Game.AP.Editor",
+    "references": ["Forge.Bench", "Forge.Bench.Editor", "Game.AP.Shared"],
+    "includePlatforms": ["Editor"],
+    "autoReferenced": true
+}

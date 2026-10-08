@@ -1,0 +1,6 @@
+{
+    "name": "Game.AP.Shared",
+    "rootNamespace": "Game.AP",
+    "references": ["Forge.Bench", "Unity.TextMeshPro"],
+    "autoReferenced": true
+}

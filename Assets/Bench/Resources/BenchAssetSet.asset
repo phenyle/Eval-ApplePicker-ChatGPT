@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1976a611735709c4ab3fbe3acdad5b2d, type: 3}
+  m_Name: BenchAssetSet
+  m_EditorClassIdentifier: Forge.Bench::Forge.Bench.BenchAssetSet
+  sphere: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  capsule: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  cylinder: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  cube: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  plane: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  materials:
+  - {fileID: 2100000, guid: 9427bab8660b71d46bed6346db9fd2fb, type: 2}
+  - {fileID: 2100000, guid: 1b05475bdf96878439e5ee3f862d1229, type: 2}
+  - {fileID: 2100000, guid: 7d7711fdaa820b548870ddec9a723cbb, type: 2}
+  - {fileID: 2100000, guid: e64407af7a6b6f545a9c1ce0f54452ca, type: 2}
+  - {fileID: 2100000, guid: bed38fa0b3f9f5d41b59b20113fed6e0, type: 2}
+  - {fileID: 2100000, guid: 08634780004aa3f4e80df130f96c4bac, type: 2}
+  - {fileID: 2100000, guid: 8c316a1477031e949a71a8af746a29e8, type: 2}
+  - {fileID: 2100000, guid: 6c98f5ccc5b429b4884cbe7bb8f527c4, type: 2}
+  - {fileID: 2100000, guid: f38cbcb4192790f4c85d34af65393f33, type: 2}
+  - {fileID: 2100000, guid: 2aa7d198b6de2bd48ba2d74997e64f58, type: 2}
+  - {fileID: 2100000, guid: 3170199e2603fde4383960c31f153d15, type: 2}
+  font: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -1,0 +1,8 @@
+{
+  "name": "com.forge.bench",
+  "displayName": "FORGE Bench Core",
+  "version": "1.0.0",
+  "unity": "6000.6",
+  "description": "Shared benchmark harness for the FORGE 2027 OOP vs ECS study: run control, frame recording, deterministic RNG, workload fingerprint, GenAI client/scheduler, label pool, build/setup tooling. Canonical copy lives in analysis/harness/unity; game repos carry synced copies.",
+  "dependencies": {}
+}

@@ -1,0 +1,7 @@
+{
+    "name": "Game.AP.ECS",
+    "rootNamespace": "Game.AP.ECS",
+    "references": ["Forge.Bench", "Game.AP.Shared", "Unity.Entities", "Unity.Entities.Graphics", "Unity.Transforms",
+                   "Unity.Mathematics", "Unity.Collections", "Unity.Burst", "Unity.TextMeshPro"],
+    "autoReferenced": true
+}
