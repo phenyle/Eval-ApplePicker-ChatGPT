@@ -32,7 +32,7 @@ namespace Forge.Bench
         public string out_dir = "";
         public int job_workers = -1;
         public string stub_url = "http://127.0.0.1:8787";
-        public string live_url = "https://api.openai.com";
+        public string live_url = "https://api-main.aiml.asu.edu";   // institutional gateway (PROGRESS 2026-10-08)
         public string model = "";
         public int max_output_tokens = 16;
         public float temperature = 0.8f;

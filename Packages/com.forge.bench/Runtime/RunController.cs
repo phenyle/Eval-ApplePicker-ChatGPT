@@ -50,9 +50,29 @@ namespace Forge.Bench
             ServicePointManager.UseNagleAlgorithm = false;
         }
 
+        /// <summary>Writes 1 when the job body runs Burst-compiled; the [BurstDiscard] call (removed by Burst) writes 0
+        /// when it runs as managed code. Guards against a stale or failed Burst AOT library in the player.</summary>
+        [Unity.Burst.BurstCompile]
+        struct BurstProbe : Unity.Jobs.IJob
+        {
+            public Unity.Collections.NativeArray<int> Out;
+            public void Execute() { Out[0] = 1; Managed(ref Out); }
+            [Unity.Burst.BurstDiscard] static void Managed(ref Unity.Collections.NativeArray<int> o) => o[0] = 0;
+        }
+
+        static bool ProbeBurst()
+        {
+            var a = new Unity.Collections.NativeArray<int>(1, Unity.Collections.Allocator.TempJob);
+            Unity.Jobs.IJobExtensions.Schedule(new BurstProbe { Out = a }).Complete();
+            bool on = a[0] == 1;
+            a.Dispose();
+            return on;
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Create()
         {
+            Extra["burst_active"] = ProbeBurst() ? "true" : "false";
             var go = new GameObject("BenchRun");
             DontDestroyOnLoad(go);
             Instance = go.AddComponent<RunController>();

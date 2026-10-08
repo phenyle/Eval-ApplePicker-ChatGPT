@@ -1,7 +1,7 @@
 {
     "name": "Forge.Bench",
     "rootNamespace": "Forge.Bench",
-    "references": ["Unity.TextMeshPro"],
+    "references": ["Unity.TextMeshPro", "Unity.Burst", "Unity.Collections"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

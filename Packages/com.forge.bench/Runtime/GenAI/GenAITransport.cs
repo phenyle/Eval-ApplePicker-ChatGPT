@@ -9,8 +9,9 @@ using UnityEngine;
 namespace Forge.Bench.GenAI
 {
     /// <summary>
-    /// HTTP transport for `stub` and `live` modes (plan §2.2): HttpClient with continuations off the main thread;
-    /// completed requests go to a ConcurrentQueue drained once per frame by GenAIService. The API key is read
+    /// HTTP transport for `stub` and `live` modes (plan §2.2) to the gateway's native /query endpoint (or the replay
+    /// stub, which serves the same schema): HttpClient with continuations off the main thread;
+    /// completed requests go to a ConcurrentQueue drained once per frame by GenAIService. The gateway token is read
     /// from OPENAI_API_KEY only in live mode and is never logged.
     /// </summary>
     public sealed class GenAITransport
@@ -25,7 +26,7 @@ namespace Forge.Bench.GenAI
         public GenAITransport(BenchConfig cfg)
         {
             _live = cfg.genai == "live";
-            _url = (_live ? cfg.live_url : cfg.stub_url).TrimEnd('/') + "/v1/responses";
+            _url = (_live ? cfg.live_url : cfg.stub_url).TrimEnd('/') + "/query";
             _body = Encoding.UTF8.GetBytes(GenAIPrompts.Body(cfg.game, cfg.model, cfg.max_output_tokens, cfg.temperature));
             _seed = cfg.seed;
             var handler = new HttpClientHandler { UseProxy = false };
@@ -67,9 +68,9 @@ namespace Forge.Bench.GenAI
                         {
                             var body = JsonUtility.FromJson<RespBody>(Encoding.UTF8.GetString(bytes));
                             r.Text = Extract(body);
-                            r.TokensIn = body?.usage?.input_tokens ?? -1;
-                            r.TokensOut = body?.usage?.output_tokens ?? -1;
-                            r.Status = "ok";
+                            r.TokensIn = body?.metadata?.usage_metric?.input_token_count ?? -1;
+                            r.TokensOut = body?.metadata?.usage_metric?.output_token_count ?? -1;
+                            r.Status = r.Text.Length > 0 ? "ok" : "parse_error";
                         }
                         catch (Exception) { r.Status = "parse_error"; }
                     }
@@ -87,15 +88,6 @@ namespace Forge.Bench.GenAI
             Completed.Enqueue(r);
         }
 
-        public static string Extract(RespBody b)
-        {
-            if (b?.output == null) return "";
-            var sb = new StringBuilder();
-            foreach (var o in b.output)
-                if (o?.content != null)
-                    foreach (var c in o.content)
-                        if (c != null && c.type == "output_text") sb.Append(c.text);
-            return sb.ToString().Trim();
-        }
+        public static string Extract(RespBody b) => (b?.response ?? "").Trim();
     }
 }

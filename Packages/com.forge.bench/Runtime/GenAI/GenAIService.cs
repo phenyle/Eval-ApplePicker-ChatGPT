@@ -21,6 +21,11 @@ namespace Forge.Bench.GenAI
         public static GenAIService Instance { get; private set; }
         public const int FixedHz = 50;
 
+        /// <summary>Optional replacement for LabelPool.Show when the authoritative world does not render (Netcode for
+        /// Entities host: the text is written to a replicated ghost field and displayed by the client world).
+        /// Arguments: target spawn index, text, request id (label sequence), expiry (sim time).</summary>
+        public static System.Action<int, string, int, double> LabelSink;
+
         BenchConfig _cfg;
         GenAITransport _transport;
         PregenEntry[] _pregen;
@@ -92,7 +97,7 @@ namespace Forge.Bench.GenAI
         public void OnDespawn(int spawnIdx)
         {
             if (_rate) _live.Remove(spawnIdx);
-            LabelPool.Hide(spawnIdx);
+            if (LabelSink == null) LabelPool.Hide(spawnIdx);
         }
 
         void Schedule(int id, int target)
@@ -161,7 +166,8 @@ namespace Forge.Bench.GenAI
                 Fingerprint.ReqDropped++;
                 return;
             }
-            LabelPool.Show(r.Target, r.Text, r.Id, now + _labelSeconds);
+            if (LabelSink != null) LabelSink(r.Target, r.Text, r.Id, now + _labelSeconds);
+            else LabelPool.Show(r.Target, r.Text, r.Id, now + _labelSeconds);
             r.AppliedQpc = Stopwatch.GetTimestamp();
             r.VisibleFrame = Time.frameCount;
             _appliedLastFrame.Add(r);

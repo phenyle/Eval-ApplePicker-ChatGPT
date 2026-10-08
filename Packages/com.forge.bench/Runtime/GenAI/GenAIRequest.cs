@@ -15,7 +15,8 @@ namespace Forge.Bench.GenAI
         public string Text = "";
     }
 
-    /// <summary>Prompts and request body; must match analysis/harness/genai_common.py.</summary>
+    /// <summary>Prompts and request body for the institutional gateway's native /query endpoint; must match
+    /// analysis/harness/genai_common.py (request_body, PROMPTS, SYSTEM_PROMPT).</summary>
     public static class GenAIPrompts
     {
         public const string AP = "1 line greeting";
@@ -25,17 +26,28 @@ namespace Forge.Bench.GenAI
 
         static string Esc(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
 
-        /// <summary>Same key order and separators as Python json.dumps(request_body(...)).</summary>
-        public static string Body(string game, string model, int maxTokens, float temperature) =>
-            "{\"model\": \"" + Esc(model ?? "") + "\", \"input\": \"" + Esc(For(game)) +
-            "\", \"max_output_tokens\": " + maxTokens + ", \"temperature\": " +
-            temperature.ToString("0.0###", System.Globalization.CultureInfo.InvariantCulture) + ", \"store\": false}";
+        public const string SystemPrompt = " ";   // suppresses the gateway project's default system prompt
+
+        /// <summary>Same key order and separators as Python json.dumps(request_body(...)).
+        /// `model` is "provider/name", e.g. "openai/gpt4o_mini".</summary>
+        public static string Body(string game, string model, int maxTokens, float temperature)
+        {
+            model ??= "";
+            int slash = model.IndexOf('/');
+            string provider = slash > 0 ? model.Substring(0, slash) : "";
+            string name = slash > 0 ? model.Substring(slash + 1) : model;
+            string t = temperature.ToString("0.0###", System.Globalization.CultureInfo.InvariantCulture);
+            return "{\"query\": \"" + Esc(For(game)) + "\", \"endpoint\": \"query\", \"request_source\": \"override_params\", " +
+                   "\"model_provider\": \"" + Esc(provider) + "\", \"model_name\": \"" + Esc(name) + "\", " +
+                   "\"model_params\": {\"temperature\": " + t + ", \"max_tokens\": " + maxTokens +
+                   ", \"system_prompt\": \"" + Esc(SystemPrompt) + "\"}, \"enable_search\": false, \"enable_history\": false}";
+        }
     }
 
-    [System.Serializable] public class RespContent { public string type; public string text; }
-    [System.Serializable] public class RespOutput { public string type; public RespContent[] content; }
-    [System.Serializable] public class RespUsage { public int input_tokens = -1; public int output_tokens = -1; }
-    [System.Serializable] public class RespBody { public RespOutput[] output; public RespUsage usage; }
+    // Gateway response: {"response": "<text>", "metadata": {"usage_metric": {"input_token_count", "output_token_count", ...}}}
+    [System.Serializable] public class RespUsage { public int input_token_count = -1; public int output_token_count = -1; }
+    [System.Serializable] public class RespMeta { public RespUsage usage_metric; }
+    [System.Serializable] public class RespBody { public string response; public RespMeta metadata; }
 
     [System.Serializable] public class PregenEntry { public int http_code; public float latency_ms; public string text; public int tokens_in; public int tokens_out; }
     [System.Serializable] public class PregenFile { public string[] sources; public PregenEntry[] entries; }
