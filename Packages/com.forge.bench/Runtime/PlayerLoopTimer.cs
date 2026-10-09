@@ -28,7 +28,7 @@ namespace Forge.Bench
         struct PreLateBegin { } struct PreLateEnd { }
         struct PostLateBegin { } struct PostLateEnd { }
 
-        public static void Install()
+        public static void Install(bool phases = true)
         {
             if (_installed) return;
             var loop = PlayerLoop.GetCurrentPlayerLoop();
@@ -38,6 +38,7 @@ namespace Forge.Bench
                 var t = subs[i].type;
                 if (i == 0)
                     subs[i] = Wrap(subs[i], typeof(FrameStartMarker), FrameStart, null, null);
+                if (!phases) continue;
                 if (t == typeof(FixedUpdate))
                     subs[i] = Wrap(subs[i], typeof(FixedBegin), () => Mark(Phase.Fixed, true), typeof(FixedEnd), () => Mark(Phase.Fixed, false));
                 else if (t == typeof(Update))

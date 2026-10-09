@@ -41,6 +41,7 @@ namespace Forge.Bench
         public int connect_port = 7778;
         public int sample_count = 64;
         public int[] affinity = Array.Empty<int>();
+        public string recorder = "full";  // "minimal": frame time only, for the logger-overhead check (plan §2.9)
         public float screenshot_s;      // >0: capture screenshot_<role>.png this many seconds into the window (§2.8 visual parity)
 
         public static BenchConfig Current { get; private set; }

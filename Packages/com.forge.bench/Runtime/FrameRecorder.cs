@@ -42,10 +42,13 @@ namespace Forge.Bench
         public static long FixedStepsTotal;
         public static long GenAITicks;   // accumulated by GenAIService per frame
 
-        public static void Init()
+        static bool _minimal;
+
+        public static void Init(bool minimal = false)
         {
+            _minimal = minimal;
             _rows = new Row[Capacity];
-            _gcAlloc = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame");
+            if (!minimal) _gcAlloc = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame");
             PlayerLoopTimer.OnFrameStart += OnFrameStart;
         }
 
@@ -64,6 +67,22 @@ namespace Forge.Bench
         static void Commit()
         {
             if (_n >= Capacity) { Overflow = true; return; }
+            if (_minimal)
+            {
+                // Frame time only (logger-overhead check): no FrameTimingManager, GC, profiler or phase timing.
+                ref var q = ref _rows[_n++];
+                q.Frame = Time.frameCount;
+                q.Phase = (byte)RunController.CurrentPhase;
+                q.TQpc = _frameStartQpc;
+                q.SimTime = Time.timeAsDouble;
+                q.FixedSteps = FixedStepsTotal;
+                q.Dt = Time.unscaledDeltaTime * 1000f;
+                q.CpuFrame = q.CpuMain = q.CpuRender = q.Gpu = q.PresentWait = float.NaN;
+                q.GcAllocFrame = -1;
+                q.Live = Fingerprint.Live; q.Spawned = Fingerprint.Spawned; q.Despawned = Fingerprint.Despawned;
+                q.Hits = Fingerprint.Hits; q.NetTick = -1; q.NetTickEst = -1;
+                return;
+            }
             FrameTimingManager.CaptureFrameTimings();
             uint got = FrameTimingManager.GetLatestTimings(1, Timings);
             if (got > 0) FtmSupported = true;

@@ -81,8 +81,10 @@ namespace Forge.Bench
         void Awake()
         {
             _cfg = BenchConfig.Load();
-            PlayerLoopTimer.Install();
-            FrameRecorder.Init();
+            bool minimal = _cfg.recorder == "minimal";
+            PlayerLoopTimer.Install(phases: !minimal);
+            FrameRecorder.Init(minimal);
+            Extra["recorder"] = _cfg.recorder;
             Clock.Start();
         }
 
